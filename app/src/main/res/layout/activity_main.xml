@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/activity_main.xml -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Custom Drawing View -->
+
+    <!-- ImageView for listener -->
+    <com.example.draw.DrawingView
+        android:id="@+id/drawingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/eraser"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/eraser"
+        android:layout_marginStart="332dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="4dp" /><!-- Icon for eraser or other actions -->
+
+    <ImageView
+        android:id="@+id/paint_bucket"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/paint_bucket"
+        android:layout_marginStart="330dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="4dp" />
+
+</FrameLayout>
