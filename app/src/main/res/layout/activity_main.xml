@@ -3,7 +3,8 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <!-- Custom Drawing View -->
 
@@ -15,23 +16,33 @@
         android:layout_height="match_parent" />
 
     <ImageView
-        android:id="@+id/eraser"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/eraser"
-        android:layout_marginStart="332dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="4dp" /><!-- Icon for eraser or other actions -->
+        android:id="@+id/delete"
+        android:layout_width="35dp"
+        android:layout_height="30dp"
+        android:src="@drawable/delete"
+        android:layout_marginStart="238dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="4dp" />
 
     <ImageView
         android:id="@+id/paint_bucket"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
         android:src="@drawable/paint_bucket"
-        android:layout_marginStart="330dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="285dp"
+        android:layout_marginTop="6dp"
         android:layout_marginBottom="4dp" />
+
+    <ImageView
+        android:id="@+id/eraser"
+        android:layout_width="30dp"
+        android:layout_height="45dp"
+        android:src="@drawable/eraser"
+        android:layout_marginStart="342dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="4dp" /><!-- Icon for eraser or other actions -->
+
 
     <SeekBar
         android:id="@+id/seekBar"

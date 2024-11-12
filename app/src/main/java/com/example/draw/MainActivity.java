@@ -8,7 +8,7 @@ import android.widget.SeekBar;
 
 public class MainActivity extends AppCompatActivity {
     private DrawingView drawingView;
-    private ImageView eraser,paint_bucket;
+    private ImageView eraser,paint_bucket,delete;
     private SeekBar seekBar;
 
     @Override
@@ -17,14 +17,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         drawingView = findViewById(R.id.drawingView);
+        delete = findViewById(R.id.delete);
         eraser = findViewById(R.id.eraser);
         paint_bucket = findViewById(R.id.paint_bucket);
         seekBar = findViewById(R.id.seekBar);
 
-        eraser.setOnClickListener(new View.OnClickListener() {
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawingView.clear();
+            }
+        });
+
+        eraser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawingView.erase();
             }
         });
 

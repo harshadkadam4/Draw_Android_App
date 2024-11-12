@@ -118,6 +118,12 @@ public class DrawingView extends View {
        strokeWidths.clear();
        invalidate();
     }
+
+    public void erase()
+    {
+        currentColor = Color.WHITE;
+        invalidate();
+    }
 }
 
 
