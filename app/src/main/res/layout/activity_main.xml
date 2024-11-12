@@ -8,6 +8,7 @@
     <!-- Custom Drawing View -->
 
     <!-- ImageView for listener -->
+
     <com.example.draw.DrawingView
         android:id="@+id/drawingView"
         android:layout_width="match_parent"
@@ -31,5 +32,14 @@
         android:layout_marginStart="330dp"
         android:layout_marginTop="60dp"
         android:layout_marginBottom="4dp" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="221dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="670dp"
+        android:layout_marginBottom="4dp"
+        android:max="100"/>
 
 </FrameLayout>
