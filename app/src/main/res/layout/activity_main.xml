@@ -16,6 +16,15 @@
         android:layout_height="match_parent" />
 
     <ImageView
+        android:id="@+id/save"
+        android:layout_width="35dp"
+        android:layout_height="30dp"
+        android:src="@drawable/save"
+        android:layout_marginStart="195dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="4dp" />
+
+    <ImageView
         android:id="@+id/delete"
         android:layout_width="35dp"
         android:layout_height="30dp"
@@ -38,7 +47,7 @@
         android:layout_width="30dp"
         android:layout_height="45dp"
         android:src="@drawable/eraser"
-        android:layout_marginStart="342dp"
+        android:layout_marginStart="335dp"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="4dp" /><!-- Icon for eraser or other actions -->

@@ -1,15 +1,28 @@
 package com.example.draw;
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Build;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import yuku.ambilwarna.AmbilWarnaDialog;
+import android.graphics.Bitmap;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.Toast;
+
+import java.io.FileOutputStream;
 
 public class DrawingView extends View {
     private Paint paint;
@@ -18,7 +31,7 @@ public class DrawingView extends View {
     private List<Integer> colors = new ArrayList<>();
     private List<Float> strokeWidths = new ArrayList<>();
    // private boolean isEraser = false;
-    private int currentColor = Color.BLACK;
+    private int currentColor = Color.RED;
     private float stroke = 10f;
 
 
@@ -32,7 +45,8 @@ public class DrawingView extends View {
         // Set up paint properties
         paint = new Paint();
         paint.setColor(currentColor);          // Color of the paint
-        paint.setStyle(Paint.Style.STROKE);    // Paint style (STROKE, FILL, or FILL_AND_STROKE)
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeCap(Paint.Cap.ROUND);// Paint style (STROKE, FILL, or FILL_AND_STROKE)
         paint.setStrokeWidth(stroke);              // Stroke width
         paint.setAntiAlias(true);              // Smooth edges
     }
@@ -103,6 +117,54 @@ public class DrawingView extends View {
         stroke = progress;
         invalidate();
     }
+
+    public void saveFrameLayout() {
+        // Enable drawing cache
+        setDrawingCacheEnabled(true);
+        buildDrawingCache();
+
+        // Capture the bitmap
+        Bitmap originalBitmap = getDrawingCache();
+        if (originalBitmap != null) {
+            try {
+                // Create a new bitmap with a white background
+                Bitmap bitmapWithBackground = Bitmap.createBitmap(
+                        originalBitmap.getWidth(),
+                        originalBitmap.getHeight(),
+                        Bitmap.Config.ARGB_8888
+                );
+
+                // Draw the white background and the original bitmap onto the new bitmap
+                Canvas canvas = new Canvas(bitmapWithBackground);
+                canvas.drawColor(Color.WHITE); // Draw white background
+                canvas.drawBitmap(originalBitmap, 0, 0, null);
+
+                // Define file path (app-specific external storage)
+                File filePath = new File(getContext().getExternalFilesDir(null), "drawing_with_bg.png");
+                FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+
+                // Save the new bitmap to the file
+                bitmapWithBackground.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+
+                // Show confirmation message
+                Toast.makeText(getContext(), "Drawing saved to: " + filePath.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Error saving drawing: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            } finally {
+                // Disable drawing cache
+                setDrawingCacheEnabled(false);
+                destroyDrawingCache();
+            }
+        } else {
+            Toast.makeText(getContext(), "Error capturing drawing.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
 //    public void toggleEraser()
 //    {

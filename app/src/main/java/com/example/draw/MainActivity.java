@@ -8,7 +8,7 @@ import android.widget.SeekBar;
 
 public class MainActivity extends AppCompatActivity {
     private DrawingView drawingView;
-    private ImageView eraser,paint_bucket,delete;
+    private ImageView eraser,paint_bucket,delete, save;
     private SeekBar seekBar;
 
     @Override
@@ -16,7 +16,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         drawingView = findViewById(R.id.drawingView);
+        save = findViewById(R.id.save);
         delete = findViewById(R.id.delete);
         eraser = findViewById(R.id.eraser);
         paint_bucket = findViewById(R.id.paint_bucket);
@@ -57,6 +62,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawingView.saveFrameLayout();
             }
         });
 
