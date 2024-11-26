@@ -1,14 +1,10 @@
 package com.example.draw;
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Build;
-import android.os.Environment;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import android.graphics.Bitmap;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -34,11 +29,23 @@ public class DrawingView extends View {
     private int currentColor = Color.RED;
     private float stroke = 10f;
 
+    private FrameLayout fLayout;
+
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setUpPaint();
     }
+
+    public void setFrameLayout(FrameLayout frameLayout) {
+        this.fLayout = frameLayout;
+    }
+
+    public void setLayoutBG(Drawable drawable)
+    {
+        fLayout.setBackground(drawable);
+    }
+
 
     private void setUpPaint()
     {
@@ -140,7 +147,7 @@ public class DrawingView extends View {
                 canvas.drawBitmap(originalBitmap, 0, 0, null);
 
                 // Define file path (app-specific external storage)
-                File filePath = new File(getContext().getExternalFilesDir(null), "drawing_with_bg.png");
+                File filePath = new File(getContext().getExternalFilesDir(null), "drawing.png");
                 FileOutputStream fileOutputStream = new FileOutputStream(filePath);
 
                 // Save the new bitmap to the file
@@ -178,6 +185,7 @@ public class DrawingView extends View {
        paths.clear();
        colors.clear();
        strokeWidths.clear();
+       //fLayout.setBackground(Color.WHITE);
        invalidate();
     }
 
@@ -186,6 +194,8 @@ public class DrawingView extends View {
         currentColor = Color.WHITE;
         invalidate();
     }
+
+
 }
 
 
