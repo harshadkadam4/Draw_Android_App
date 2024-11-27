@@ -32,22 +32,10 @@ public class DrawingView extends View {
 
     private FrameLayout fLayout;
 
-
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setUpPaint();
     }
-
-    public void setFrameLayout(FrameLayout frameLayout) {
-        this.fLayout = frameLayout;
-    }
-
-    public void setLayoutBG(Drawable drawable) {
-        if (fLayout != null) {
-            fLayout.setBackground(drawable); // Set Drawable as background
-        }
-    }
-
 
     private void setUpPaint()
     {
@@ -272,11 +260,11 @@ public class DrawingView extends View {
 //    }
 
     // Method to clear the drawing
-    public void clear() {
+    public void clear(FrameLayout frameLayout) {
        paths.clear();
        colors.clear();
        strokeWidths.clear();
-       //fLayout.setBackground(Color.WHITE);
+       frameLayout.setBackgroundResource(R.color.white);
        invalidate();
     }
 

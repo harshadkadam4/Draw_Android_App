@@ -2,7 +2,6 @@ package com.example.draw;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.ImageDecoder;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -21,7 +20,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private DrawingView drawingView;
-    private ImageView eraser, paint_bucket, delete, save, open, tp;
+    private ImageView eraser, paint_bucket, delete, save, open;
     private SeekBar seekBar;
     private FrameLayout fLayout;
 
@@ -45,12 +44,10 @@ public class MainActivity extends AppCompatActivity {
         open = findViewById(R.id.open);
         fLayout = findViewById(R.id.fLayout);
 
-        tp = findViewById(R.id.tp);
-
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawingView.clear();
+                drawingView.clear(fLayout);
             }
         });
 
@@ -88,22 +85,10 @@ public class MainActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //drawingView.saveFrameLayout(fLayout);
-//
-//                Bitmap bitmap = Bitmap.createBitmap(fLayout.getWidth(),fLayout.getHeight(),Bitmap.Config.ARGB_8888);
-//                Canvas canvas = new Canvas(bitmap);
-//                fLayout.draw(canvas);
-//                tp.setImageBitmap(bitmap);
-
                // drawingView.saveFrameLayout(fLayout);
                 drawingView.saveDrawingOnly(fLayout);
             }
         });
-//        drawingView = new DrawingView(this);
-//        setContentView(drawingView);
-
-
-        //drawingView.setFrameLayout(fLayout);
 
     }
 
@@ -112,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("image/*");
 
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
-
     }
 
     @Override

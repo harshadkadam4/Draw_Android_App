@@ -17,13 +17,6 @@
         android:layout_height="match_parent" />
 
     <ImageView
-        android:id="@+id/tp"
-        android:layout_width="400dp"
-        android:layout_height="550dp"
-        android:layout_marginTop="120dp"
-        android:layout_marginBottom="4dp" />
-
-    <ImageView
         android:id="@+id/open"
         android:layout_width="45dp"
         android:layout_height="35dp"
