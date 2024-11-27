@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,9 +42,10 @@ public class DrawingView extends View {
         this.fLayout = frameLayout;
     }
 
-    public void setLayoutBG(Drawable drawable)
-    {
-        fLayout.setBackground(drawable);
+    public void setLayoutBG(Drawable drawable) {
+        if (fLayout != null) {
+            fLayout.setBackground(drawable); // Set Drawable as background
+        }
     }
 
 
@@ -124,7 +126,7 @@ public class DrawingView extends View {
         stroke = progress;
         invalidate();
     }
-
+/*
     public void saveFrameLayout() {
         // Enable drawing cache
         setDrawingCacheEnabled(true);
@@ -134,17 +136,23 @@ public class DrawingView extends View {
         Bitmap originalBitmap = getDrawingCache();
         if (originalBitmap != null) {
             try {
-                // Create a new bitmap with a white background
+                // Create a new bitmap to include the current background
                 Bitmap bitmapWithBackground = Bitmap.createBitmap(
                         originalBitmap.getWidth(),
                         originalBitmap.getHeight(),
                         Bitmap.Config.ARGB_8888
                 );
 
-                // Draw the white background and the original bitmap onto the new bitmap
+                // Get the FrameLayout's background drawable
+                Drawable backgroundDrawable = getBackground();
+
+                // Draw the current background and the original bitmap onto the new bitmap
                 Canvas canvas = new Canvas(bitmapWithBackground);
-                canvas.drawColor(Color.WHITE); // Draw white background
-                canvas.drawBitmap(originalBitmap, 0, 0, null);
+                if (backgroundDrawable != null) {
+                    backgroundDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                    backgroundDrawable.draw(canvas); // Draw the current background
+                }
+                canvas.drawBitmap(originalBitmap, 0, 0, null); // Draw the content
 
                 // Define file path (app-specific external storage)
                 File filePath = new File(getContext().getExternalFilesDir(null), "drawing.png");
@@ -169,6 +177,89 @@ public class DrawingView extends View {
         } else {
             Toast.makeText(getContext(), "Error capturing drawing.", Toast.LENGTH_SHORT).show();
         }
+    }
+*/
+
+ /*   // Method to save FrameLayout content as an image
+    public void saveFrameLayout(FrameLayout frameLayout) {
+        try {
+            // Create a Bitmap with the same dimensions as the FrameLayout
+            Bitmap bitmap = Bitmap.createBitmap(frameLayout.getWidth(), frameLayout.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+
+            // Get the background drawable of the FrameLayout
+            Drawable background = frameLayout.getBackground();
+            if (background != null) {
+                // Draw the background onto the canvas
+                background.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                background.draw(canvas);
+            } else {
+                // If no background is set, fill with a default color (e.g., white)
+                canvas.drawColor(Color.WHITE);
+            }
+
+            // Draw the FrameLayout's contents onto the canvas
+            frameLayout.draw(canvas);
+
+            // Save the bitmap to a file
+            String fileName = "drawing.png";
+            File filePath = new File(getContext().getExternalFilesDir(null), fileName);
+            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+
+            // Notify user of success
+            Toast.makeText(getContext(), "Saved at: " + filePath.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+*/
+
+    public void saveDrawingOnly(FrameLayout frameLayout) {
+        try {
+            // Capture only the DrawingView content as a Bitmap
+            DrawingView drawingView = frameLayout.findViewById(R.id.drawingView);
+            Bitmap bitmap = Bitmap.createBitmap(drawingView.getWidth(), drawingView.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+
+            // Draw the FrameLayout's background if necessary
+            Drawable backgroundDrawable = frameLayout.getBackground();
+            if (backgroundDrawable != null) {
+                backgroundDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                backgroundDrawable.draw(canvas);
+            }
+
+            // Draw the DrawingView content
+            drawingView.draw(canvas);
+
+            // Save the bitmap to a file
+            String fileName = "drawing_without_ui.png";
+            File filePath = new File(getContext().getExternalFilesDir(null), fileName);
+
+            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+
+            // Notify the user
+            Toast.makeText(getContext(), "Saved at: " + filePath.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Error saving image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+    // Capture FrameLayout content as a Bitmap
+    private Bitmap captureFrameLayout(FrameLayout frameLayout) {
+        Bitmap bitmap = Bitmap.createBitmap(frameLayout.getWidth(), frameLayout.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        frameLayout.draw(canvas);
+        return bitmap;
     }
 
 

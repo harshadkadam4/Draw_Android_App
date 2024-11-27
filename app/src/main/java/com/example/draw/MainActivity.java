@@ -2,6 +2,7 @@ package com.example.draw;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.ImageDecoder;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,10 +21,9 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private DrawingView drawingView;
-    private ImageView eraser,paint_bucket,delete, save,open;
+    private ImageView eraser, paint_bucket, delete, save, open, tp;
     private SeekBar seekBar;
     private FrameLayout fLayout;
-
 
     private int REQUEST_PICK_IMAGE = 1000;
 
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         open = findViewById(R.id.open);
         fLayout = findViewById(R.id.fLayout);
 
+        tp = findViewById(R.id.tp);
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,23 +88,30 @@ public class MainActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawingView.saveFrameLayout();
+                //drawingView.saveFrameLayout(fLayout);
+//
+//                Bitmap bitmap = Bitmap.createBitmap(fLayout.getWidth(),fLayout.getHeight(),Bitmap.Config.ARGB_8888);
+//                Canvas canvas = new Canvas(bitmap);
+//                fLayout.draw(canvas);
+//                tp.setImageBitmap(bitmap);
+
+               // drawingView.saveFrameLayout(fLayout);
+                drawingView.saveDrawingOnly(fLayout);
             }
         });
 //        drawingView = new DrawingView(this);
 //        setContentView(drawingView);
 
 
-        drawingView.setFrameLayout(fLayout);
+        //drawingView.setFrameLayout(fLayout);
 
     }
 
-    public void pickImage(View view)
-    {
+    public void pickImage(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
 
-        startActivityForResult(intent,REQUEST_PICK_IMAGE);
+        startActivityForResult(intent, REQUEST_PICK_IMAGE);
 
     }
 
@@ -111,40 +119,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK) {
-            if(requestCode == REQUEST_PICK_IMAGE) {
+        if (resultCode == RESULT_OK && data != null) { // Added null check
+            if (requestCode == REQUEST_PICK_IMAGE) {
                 Uri uri = data.getData();
-                Bitmap bitmap = loadFromUri(uri);
-
-
-
-                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                //fLayout.setBackground(drawable);
-                drawingView.setLayoutBG(drawable);
+                if (uri != null) { // Check if URI is not null
+                    Bitmap bitmap = loadFromUri(uri);
+                    Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                    fLayout.setBackground(drawable);
+                    //drawingView.setLayoutBG(drawable); // Assuming setLayoutBG() is defined in DrawingView
+                }
             }
         }
-
     }
 
-    private Bitmap loadFromUri(Uri uri)
-    {
+
+    private Bitmap loadFromUri(Uri uri) {
         Bitmap bitmap = null;
-
         try {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1)
-            {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), uri);
-                bitmap = ImageDecoder.decodeBitmap(source);
+                bitmap = ImageDecoder.decodeBitmap(source, (decoder, info, src) ->
+                        decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE) // Force software rendering
+                );
+            } else {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             }
-            else {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
-            }
-
-        } catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
         return bitmap;
     }
 }
