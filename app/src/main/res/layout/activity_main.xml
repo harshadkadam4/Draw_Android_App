@@ -5,16 +5,30 @@
     android:layout_width="match_parent"
     android:id="@+id/fLayout"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     >
 
     <!-- Custom Drawing View -->
 
     <!-- ImageView for listener -->
 
+
+    <ImageView
+        android:id="@+id/bg_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:scaleType="fitStart"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false"  />
+
     <com.example.draw.DrawingView
         android:id="@+id/drawingView"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
     <ImageView
         android:id="@+id/open"
@@ -71,6 +85,6 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="670dp"
         android:layout_marginBottom="4dp"
-        android:max="100"/>
+        android:max="100" />
 
 </FrameLayout>

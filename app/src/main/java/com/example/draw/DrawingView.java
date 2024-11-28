@@ -1,21 +1,21 @@
 package com.example.draw;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import android.graphics.Bitmap;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
@@ -26,7 +26,7 @@ public class DrawingView extends View {
     private List<Path> paths = new ArrayList<>();
     private List<Integer> colors = new ArrayList<>();
     private List<Float> strokeWidths = new ArrayList<>();
-   // private boolean isEraser = false;
+    //private boolean isEraser = false;
     private int currentColor = Color.RED;
     private float stroke = 10f;
 
@@ -206,26 +206,42 @@ public class DrawingView extends View {
     }
 */
 
-    public void saveDrawingOnly(FrameLayout frameLayout) {
+    public void saveDrawingWithBackground(FrameLayout frameLayout) {
         try {
-            // Capture only the DrawingView content as a Bitmap
-            DrawingView drawingView = frameLayout.findViewById(R.id.drawingView);
-            Bitmap bitmap = Bitmap.createBitmap(drawingView.getWidth(), drawingView.getHeight(), Bitmap.Config.ARGB_8888);
+            // Create a Bitmap with the same dimensions as the FrameLayout
+            Bitmap bitmap = Bitmap.createBitmap(frameLayout.getWidth(), frameLayout.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
 
-            // Draw the FrameLayout's background if necessary
+            // Draw the FrameLayout's background (if any)
             Drawable backgroundDrawable = frameLayout.getBackground();
             if (backgroundDrawable != null) {
                 backgroundDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
                 backgroundDrawable.draw(canvas);
             }
 
-            // Draw the DrawingView content
-            drawingView.draw(canvas);
+            // Draw the ImageView's content at its actual position
+            ImageView backgroundImage = frameLayout.findViewById(R.id.bg_image);
+            if (backgroundImage != null && backgroundImage.getDrawable() != null) {
+                // Save the ImageView's transformation and position
+                int saveId = canvas.save();
 
-            // Save the bitmap to a file
-            String fileName = "drawing_without_ui.png";
-            File filePath = new File(getContext().getExternalFilesDir(null), fileName);
+                // Apply ImageView transformations
+                canvas.translate(backgroundImage.getLeft(), backgroundImage.getTop());
+                backgroundImage.getDrawable().draw(canvas);
+
+                // Restore the canvas to avoid affecting subsequent drawings
+                canvas.restoreToCount(saveId);
+            }
+
+            // Draw the DrawingView content
+            DrawingView drawingView = frameLayout.findViewById(R.id.drawingView);
+            if (drawingView != null) {
+                drawingView.draw(canvas);
+            }
+
+            // Save the combined bitmap to a file
+            String fileName = "drawing.png";
+            File filePath = new File(frameLayout.getContext().getExternalFilesDir(null), fileName);
 
             FileOutputStream fileOutputStream = new FileOutputStream(filePath);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
@@ -233,14 +249,12 @@ public class DrawingView extends View {
             fileOutputStream.close();
 
             // Notify the user
-            Toast.makeText(getContext(), "Saved at: " + filePath.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            Toast.makeText(frameLayout.getContext(), "Saved at: " + filePath.getAbsolutePath(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), "Error saving image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(frameLayout.getContext(), "Error saving image", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     // Capture FrameLayout content as a Bitmap
     private Bitmap captureFrameLayout(FrameLayout frameLayout) {
@@ -256,7 +270,7 @@ public class DrawingView extends View {
 //    {
 //        isEraser = !isEraser;
 //        paint.setColor(isEraser ? Color.WHITE : Color.BLACK);
-//        paint.setStrokeWidth(isEraser ? 20 : 10);
+//        //paint.setStrokeWidth(isEraser ? 20 : 10);
 //    }
 
     // Method to clear the drawing

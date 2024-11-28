@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,7 +21,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private DrawingView drawingView;
-    private ImageView eraser, paint_bucket, delete, save, open;
+    private ImageView eraser, paint_bucket, delete, save, open,bg_image;
     private SeekBar seekBar;
     private FrameLayout fLayout;
 
@@ -43,11 +44,14 @@ public class MainActivity extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
         open = findViewById(R.id.open);
         fLayout = findViewById(R.id.fLayout);
+        bg_image = findViewById(R.id.bg_image);
+
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawingView.clear(fLayout);
+                bg_image.setImageDrawable(null);
             }
         });
 
@@ -85,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // drawingView.saveFrameLayout(fLayout);
-                drawingView.saveDrawingOnly(fLayout);
+                // drawingView.saveFrameLayout(fLayout);
+                drawingView.saveDrawingWithBackground(fLayout);
             }
         });
 
@@ -109,7 +113,24 @@ public class MainActivity extends AppCompatActivity {
                 if (uri != null) { // Check if URI is not null
                     Bitmap bitmap = loadFromUri(uri);
                     Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                    fLayout.setBackground(drawable);
+                    if (drawable != null) {
+                        bg_image.setImageDrawable(drawable);
+
+                        // Get layout width and calculate proportional height
+                        int layoutWidth = fLayout.getWidth();
+                        int intrinsicWidth = drawable.getIntrinsicWidth();
+                        int intrinsicHeight = drawable.getIntrinsicHeight();
+
+                        if (intrinsicWidth > 0) {
+                            int scaledHeight = (intrinsicHeight * layoutWidth) / intrinsicWidth;
+                            bg_image.getLayoutParams().height = scaledHeight;
+                            bg_image.getLayoutParams().width = layoutWidth;
+                            bg_image.requestLayout();
+                        }
+
+                        // Set scaleType to maintain aspect ratio
+                        bg_image.setScaleType(ImageView.ScaleType.FIT_XY);
+                    }
                     //drawingView.setLayoutBG(drawable); // Assuming setLayoutBG() is defined in DrawingView
                 }
             }
@@ -134,20 +155,3 @@ public class MainActivity extends AppCompatActivity {
         return bitmap;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
