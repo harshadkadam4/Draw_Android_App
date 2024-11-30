@@ -21,14 +21,14 @@
         android:scaleType="fitStart"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:clickable="false"  />
+        android:clickable="false" />
+
 
     <com.example.draw.DrawingView
         android:id="@+id/drawingView"
-        android:background="@android:color/transparent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent" />
 
     <ImageView
         android:id="@+id/open"
@@ -86,5 +86,14 @@
         android:layout_marginTop="670dp"
         android:layout_marginBottom="4dp"
         android:max="100" />
+
+    <EditText
+        android:id="@+id/textBox"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="60dp"
+        android:textColor="#000000"
+        android:hint="Add Text"/>
 
 </FrameLayout>

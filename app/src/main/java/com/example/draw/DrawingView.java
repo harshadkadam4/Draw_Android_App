@@ -279,6 +279,8 @@ public class DrawingView extends View {
        colors.clear();
        strokeWidths.clear();
        frameLayout.setBackgroundResource(R.color.white);
+       currentColor = Color.RED;
+       paint.setColor(currentColor);
        invalidate();
     }
 
