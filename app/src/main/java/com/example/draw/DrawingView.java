@@ -1,19 +1,24 @@
 package com.example.draw;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import android.graphics.Bitmap;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -233,23 +238,54 @@ public class DrawingView extends View {
                 canvas.restoreToCount(saveId);
             }
 
+            EditText textBox = frameLayout.findViewById(R.id.textBox);
+            if(textBox != null)
+            {
+                int saveId = canvas.save();
+
+                canvas.translate(textBox.getX(), textBox.getY());
+                textBox.draw(canvas);
+                canvas.restoreToCount(saveId);
+            }
+
             // Draw the DrawingView content
             DrawingView drawingView = frameLayout.findViewById(R.id.drawingView);
-            if (drawingView != null) {
+            if (drawingView != null)
+            {
                 drawingView.draw(canvas);
             }
 
             // Save the combined bitmap to a file
-            String fileName = "drawing.png";
-            File filePath = new File(frameLayout.getContext().getExternalFilesDir(null), fileName);
+//            String fileName = "drawing.png";
+//            File filePath = new File(frameLayout.getContext().getExternalFilesDir(null), fileName);
+//
+//            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+//            fileOutputStream.flush();
+//            fileOutputStream.close();
 
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
+
+            String fileName = "drawing.png";
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                try (OutputStream os = frameLayout.getContext()
+                        .getContentResolver()
+                        .openOutputStream(frameLayout.getContext()
+                                .getContentResolver()
+                                .insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values))) {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
 
             // Notify the user
-            Toast.makeText(frameLayout.getContext(), "Saved at: " + filePath.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            Toast.makeText(frameLayout.getContext(), "Saved in Downloads", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(frameLayout.getContext(), "Error saving image", Toast.LENGTH_SHORT).show();

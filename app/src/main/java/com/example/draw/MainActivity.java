@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
         // Allow the EditText to handle its own touch events for text input
-        return lastAction != MotionEvent.ACTION_MOVE;
+        return lastAction == MotionEvent.ACTION_MOVE;
     }
 
 
