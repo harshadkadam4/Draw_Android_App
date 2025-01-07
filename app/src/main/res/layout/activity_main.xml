@@ -7,26 +7,22 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     >
-
-    <!-- Custom Drawing View -->
-
     <!-- ImageView for listener -->
-
-
     <ImageView
         android:id="@+id/bg_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:scaleType="fitStart"
+        android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:clickable="false" />
+        android:scaleType="fitStart" />
 
+    <!-- Custom Drawing View -->
 
     <com.example.draw.DrawingView
         android:id="@+id/drawingView"
-        android:layout_width="match_parent"
+        android:layout_width="515dp"
         android:layout_height="match_parent"
         android:background="@android:color/transparent" />
 
@@ -89,15 +85,16 @@
 
     <EditText
         android:id="@+id/textBox"
-        android:background="@android:color/transparent"
         android:layout_width="140dp"
         android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/poppins_regular"
         android:hint="Add Text"
-        android:textColor="#000000"
-        android:textSize="16dp"
-        android:paddingTop="8dp"
         android:paddingLeft="30dp"
+        android:paddingTop="8dp"
         android:paddingBottom="4dp"
-        android:fontFamily="@font/poppins_regular"/>
+        android:textColor="#000000"
+        android:textSize="18dp" />
+
 
 </FrameLayout>

@@ -1,28 +1,39 @@
 package com.example.draw;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ImageDecoder;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-
+import android.widget.Toast;
 import java.io.IOException;
-
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
     private DrawingView drawingView;
     private ImageView eraser, paint_bucket, delete, save, open,bg_image;
@@ -35,6 +46,67 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private int REQUEST_PICK_IMAGE = 1000;
 
+    //Menu items
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.add_textbox:
+                try {
+                    FrameLayout rootLayout = findViewById(R.id.fLayout);
+                    EditText newTextBox = new EditText(this);
+
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT
+                    );
+
+                    params.leftMargin = 50;
+                    params.topMargin = 50;
+
+                    newTextBox.setLayoutParams(params);
+                    newTextBox.setId(View.generateViewId());
+                    newTextBox.setHint("Add text");
+                    newTextBox.setBackgroundColor(Color.TRANSPARENT);
+                    newTextBox.setTextSize(18);
+                    newTextBox.setTextColor(Color.BLACK);
+                    newTextBox.setPadding(30,8,0,4);
+
+                    Typeface typeface = ResourcesCompat.getFont(this,R.font.poppins_regular);
+                    newTextBox.setTypeface(typeface);
+
+                    rootLayout.addView(newTextBox);
+
+                    newTextBox.setOnTouchListener(this);
+
+                    Toast.makeText(this, "TextBox Added", Toast.LENGTH_SHORT).show();
+
+                }catch (Exception e)
+                {
+                    Toast.makeText(this, "Err "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                 return true;
+
+            case R.id.ok2:
+                Toast.makeText(this,"OK2",Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.ok3:
+                Toast.makeText(this,"OK3",Toast.LENGTH_SHORT).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+
+       // getSupportActionBar().hide();
 
         drawingView = findViewById(R.id.drawingView);
         save = findViewById(R.id.save);
@@ -54,13 +128,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         fLayout = findViewById(R.id.fLayout);
         bg_image = findViewById(R.id.bg_image);
 
-        textBox = findViewById(R.id.textBox);
 
+        // Setting OnTouchListener
+        textBox = findViewById(R.id.textBox);
         textBox.setOnTouchListener(this);
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 drawingView.clear(fLayout);
                 bg_image.setImageDrawable(null);
                 textBox.setText("");
@@ -108,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     }
 
+
+    //Image Adding
     public void pickImage(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -197,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return lastAction == MotionEvent.ACTION_MOVE;
     } */
 
+    // Movable Textbox
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         switch (event.getActionMasked()) {
@@ -219,12 +298,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     if (view instanceof EditText) {
                         EditText editText = (EditText) view;
                         editText.requestFocus();
-
-                        // Show the keyboard
-                        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        if (imm != null) {
-                            imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
-                        }
                     }
                 }
                 break;
