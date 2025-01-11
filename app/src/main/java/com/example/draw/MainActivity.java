@@ -1,5 +1,6 @@
 package com.example.draw;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -14,9 +15,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,8 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     float dX,dY;
     int lastAction,flg=0;
-    private EditText textBox;
-
     private int REQUEST_PICK_IMAGE = 1000;
 
     //Menu items
@@ -79,6 +80,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     newTextBox.setOnTouchListener(this);
 
+                    newTextBox.setOnClickListener(new DoubleClickListener() {
+
+                        //Single Click
+                        @Override
+                        public void onSingleClick(View v) {
+                            showInputDialog(newTextBox);
+                        }
+
+                        //Double Click
+                        @Override
+                        public void onDoubleClick(View v) {
+                            showDeleteDialog(rootLayout,newTextBox);
+                        }
+                    });
+
                     Toast.makeText(this, "TextBox Added", Toast.LENGTH_SHORT).show();
 
                 }catch (Exception e)
@@ -91,14 +107,53 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Toast.makeText(this,"OK2",Toast.LENGTH_SHORT).show();
                 return true;
 
-            case R.id.ok3:
-                Toast.makeText(this,"OK3",Toast.LENGTH_SHORT).show();
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    // Input Dialog
+    private void showInputDialog(EditText textBox)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Text");
+
+        final EditText input = new EditText(this);
+
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(textBox.getText().toString());
+        builder.setView(input);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                textBox.setText(input.getText().toString());
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
+
+    private void showDeleteDialog(FrameLayout rootLayout, EditText textBox)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete TextBox");
+        builder.setMessage("Do you want to delete this textbox?");
+        builder.setPositiveButton("Delete",(dialog,which) -> {
+            rootLayout.removeView(textBox);
+            Toast.makeText(this, "TextBox Deleted", Toast.LENGTH_SHORT).show();
+        });
+
+        builder.setNegativeButton("Cancel",(dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     @Override
@@ -109,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-
        // getSupportActionBar().hide();
 
         drawingView = findViewById(R.id.drawingView);
@@ -123,16 +177,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         bg_image = findViewById(R.id.bg_image);
 
 
-        // Setting OnTouchListener to TextBox
-        textBox = findViewById(R.id.textBox);
-        textBox.setOnTouchListener(this);
-
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawingView.clear(fLayout);
                 bg_image.setImageDrawable(null);
-                textBox.setText("");
             }
         });
 
@@ -171,12 +220,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
 
@@ -187,7 +234,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 drawingView.saveDrawingWithBackground(fLayout);
             }
         });
-
     }
 
     //Image Adding
@@ -222,7 +268,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             bg_image.getLayoutParams().width = layoutWidth;
                             bg_image.requestLayout();
                         }
-
                         // Set scaleType to maintain aspect ratio
                         bg_image.setScaleType(ImageView.ScaleType.FIT_XY);
                     }
@@ -248,35 +293,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         return bitmap;
     }
- /*   @Override
-    public boolean onTouch(View view, MotionEvent event) {
-        switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                dX = view.getX() - event.getRawX();
-                dY = view.getY() - event.getRawY();
-                lastAction = MotionEvent.ACTION_DOWN;
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                view.setY(event.getRawY() + dY);
-                view.setX(event.getRawX() + dX);
-                lastAction = MotionEvent.ACTION_MOVE;
-                break;
-
-            case MotionEvent.ACTION_UP:
-                if (lastAction == MotionEvent.ACTION_DOWN) {
-                    // Trigger text input only on tap, not on drag
-                    view.performClick();
-                }
-                break;
-
-            default:
-                return false;
-        }
-
-        // Allow EditText to process touch events (e.g., cursor, keyboard)
-        return lastAction == MotionEvent.ACTION_MOVE;
-    } */
 
     // Movable Textbox
     @Override
@@ -304,25 +320,35 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             default:
                 return false;
         }
-
         // Allow the EditText to handle its own touch events for text input
-        return lastAction == MotionEvent.ACTION_MOVE;
+        return true;
     }
 
+    // Double Tap
+    public abstract static class DoubleClickListener implements View.OnClickListener
+    {
+        private long lastClickTime = 0;
+        private static final long DOUBLE_CLICK_TIME_DELTA = 300;
 
+        @Override
+        public void onClick(View v)
+        {
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA)
+            {
+                onDoubleClick(v);
+            }
+            else
+            {
+                onSingleClick(v);
+            }
+            lastClickTime = clickTime;
+        }
+
+        public abstract void onDoubleClick(View v);
+
+        public abstract void onSingleClick(View v);
+
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

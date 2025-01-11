@@ -119,97 +119,6 @@ public class DrawingView extends View {
         stroke = progress;
         invalidate();
     }
-/*
-    public void saveFrameLayout() {
-        // Enable drawing cache
-        setDrawingCacheEnabled(true);
-        buildDrawingCache();
-
-        // Capture the bitmap
-        Bitmap originalBitmap = getDrawingCache();
-        if (originalBitmap != null) {
-            try {
-                // Create a new bitmap to include the current background
-                Bitmap bitmapWithBackground = Bitmap.createBitmap(
-                        originalBitmap.getWidth(),
-                        originalBitmap.getHeight(),
-                        Bitmap.Config.ARGB_8888
-                );
-
-                // Get the FrameLayout's background drawable
-                Drawable backgroundDrawable = getBackground();
-
-                // Draw the current background and the original bitmap onto the new bitmap
-                Canvas canvas = new Canvas(bitmapWithBackground);
-                if (backgroundDrawable != null) {
-                    backgroundDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                    backgroundDrawable.draw(canvas); // Draw the current background
-                }
-                canvas.drawBitmap(originalBitmap, 0, 0, null); // Draw the content
-
-                // Define file path (app-specific external storage)
-                File filePath = new File(getContext().getExternalFilesDir(null), "drawing.png");
-                FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-
-                // Save the new bitmap to the file
-                bitmapWithBackground.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-                fileOutputStream.flush();
-                fileOutputStream.close();
-
-                // Show confirmation message
-                Toast.makeText(getContext(), "Drawing saved to: " + filePath.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Error saving drawing: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            } finally {
-                // Disable drawing cache
-                setDrawingCacheEnabled(false);
-                destroyDrawingCache();
-            }
-        } else {
-            Toast.makeText(getContext(), "Error capturing drawing.", Toast.LENGTH_SHORT).show();
-        }
-    }
-*/
-
- /*   // Method to save FrameLayout content as an image
-    public void saveFrameLayout(FrameLayout frameLayout) {
-        try {
-            // Create a Bitmap with the same dimensions as the FrameLayout
-            Bitmap bitmap = Bitmap.createBitmap(frameLayout.getWidth(), frameLayout.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-
-            // Get the background drawable of the FrameLayout
-            Drawable background = frameLayout.getBackground();
-            if (background != null) {
-                // Draw the background onto the canvas
-                background.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                background.draw(canvas);
-            } else {
-                // If no background is set, fill with a default color (e.g., white)
-                canvas.drawColor(Color.WHITE);
-            }
-
-            // Draw the FrameLayout's contents onto the canvas
-            frameLayout.draw(canvas);
-
-            // Save the bitmap to a file
-            String fileName = "drawing.png";
-            File filePath = new File(getContext().getExternalFilesDir(null), fileName);
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-
-            // Notify user of success
-            Toast.makeText(getContext(), "Saved at: " + filePath.getAbsolutePath(), Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-*/
 
     public void saveDrawingWithBackground(FrameLayout frameLayout) {
         try {
@@ -238,32 +147,12 @@ public class DrawingView extends View {
                 canvas.restoreToCount(saveId);
             }
 
-            EditText textBox = frameLayout.findViewById(R.id.textBox);
-            if(textBox != null)
-            {
-                int saveId = canvas.save();
-
-                canvas.translate(textBox.getX(), textBox.getY());
-                textBox.draw(canvas);
-                canvas.restoreToCount(saveId);
-            }
-
             // Draw the DrawingView content
             DrawingView drawingView = frameLayout.findViewById(R.id.drawingView);
             if (drawingView != null)
             {
                 drawingView.draw(canvas);
             }
-
-            // Save the combined bitmap to a file
-//            String fileName = "drawing.png";
-//            File filePath = new File(frameLayout.getContext().getExternalFilesDir(null), fileName);
-//
-//            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-//            fileOutputStream.flush();
-//            fileOutputStream.close();
-
 
             String fileName = "drawing.png";
             ContentValues values = new ContentValues();
@@ -300,15 +189,6 @@ public class DrawingView extends View {
         return bitmap;
     }
 
-
-
-//    public void toggleEraser()
-//    {
-//        isEraser = !isEraser;
-//        paint.setColor(isEraser ? Color.WHITE : Color.BLACK);
-//        //paint.setStrokeWidth(isEraser ? 20 : 10);
-//    }
-
     // Method to clear the drawing
     public void clear(FrameLayout frameLayout) {
        paths.clear();
@@ -327,16 +207,12 @@ public class DrawingView extends View {
             tempColor = currentColor;
             currentColor = Color.WHITE;
             invalidate();
-        }
-        else
+        } else
         {
             currentColor = tempColor;
             invalidate();
         }
-
     }
-
-
 }
 
 

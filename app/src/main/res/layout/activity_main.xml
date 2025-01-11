@@ -83,18 +83,4 @@
         android:layout_marginBottom="4dp"
         android:max="100" />
 
-    <EditText
-        android:id="@+id/textBox"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="@font/poppins_regular"
-        android:hint="Add Text"
-        android:paddingLeft="30dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"
-        android:textColor="#000000"
-        android:textSize="18dp" />
-
-
 </FrameLayout>

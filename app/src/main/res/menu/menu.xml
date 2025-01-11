@@ -19,11 +19,6 @@
                 app:showAsAction="never"
                 android:title="ok2"/>
 
-            <item
-                android:id="@+id/ok3"
-                app:showAsAction="never"
-                android:title="ok3"/>
-
         </menu>
 
     </item>
