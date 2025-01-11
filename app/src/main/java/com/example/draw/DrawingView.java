@@ -32,6 +32,7 @@ public class DrawingView extends View {
     private List<Float> strokeWidths = new ArrayList<>();
     //private boolean isEraser = false;
     private int currentColor = Color.RED;
+    private int tempColor;
     private float stroke = 10f;
 
     private FrameLayout fLayout;
@@ -319,10 +320,20 @@ public class DrawingView extends View {
        invalidate();
     }
 
-    public void erase()
+    public void erase(int flg)
     {
-        currentColor = Color.WHITE;
-        invalidate();
+        if(flg==0)
+        {
+            tempColor = currentColor;
+            currentColor = Color.WHITE;
+            invalidate();
+        }
+        else
+        {
+            currentColor = tempColor;
+            invalidate();
+        }
+
     }
 
 

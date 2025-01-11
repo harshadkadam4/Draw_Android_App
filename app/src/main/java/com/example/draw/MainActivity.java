@@ -1,8 +1,5 @@
 package com.example.draw;
 
-import static java.security.AccessController.getContext;
-
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -26,8 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -41,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private FrameLayout fLayout;
 
     float dX,dY;
-    int lastAction;
+    int lastAction,flg=0;
     private EditText textBox;
 
     private int REQUEST_PICK_IMAGE = 1000;
@@ -80,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     Typeface typeface = ResourcesCompat.getFont(this,R.font.poppins_regular);
                     newTextBox.setTypeface(typeface);
-
                     rootLayout.addView(newTextBox);
 
                     newTextBox.setOnTouchListener(this);
@@ -129,14 +123,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         bg_image = findViewById(R.id.bg_image);
 
 
-        // Setting OnTouchListener
+        // Setting OnTouchListener to TextBox
         textBox = findViewById(R.id.textBox);
         textBox.setOnTouchListener(this);
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 drawingView.clear(fLayout);
                 bg_image.setImageDrawable(null);
                 textBox.setText("");
@@ -146,7 +139,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         eraser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawingView.erase();
+                //eraser.setBackgroundResource(R.drawable.imageview_bg);
+
+                if(flg==0)
+                {
+                    drawingView.erase(0);
+                    //eraser.setBackgroundResource(R.drawable.imageview_bg);
+                    eraser.setColorFilter(getColor(R.color.purple_200));
+                    flg=1;
+                }
+                else {
+                    drawingView.erase(1);
+                    eraser.setColorFilter(getColor(R.color.black));
+                    flg=0;
+                }
             }
         });
 
@@ -183,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         });
 
     }
-
 
     //Image Adding
     public void pickImage(View view) {
@@ -227,7 +232,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
     }
 
-
     private Bitmap loadFromUri(Uri uri) {
         Bitmap bitmap = null;
         try {
@@ -244,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         return bitmap;
     }
-
  /*   @Override
     public boolean onTouch(View view, MotionEvent event) {
         switch (event.getActionMasked()) {
@@ -295,10 +298,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 if (lastAction == MotionEvent.ACTION_DOWN) {
                     // Trigger text input and show the keyboard immediately
                     view.performClick();
-                    if (view instanceof EditText) {
-                        EditText editText = (EditText) view;
-                        editText.requestFocus();
-                    }
                 }
                 break;
 
