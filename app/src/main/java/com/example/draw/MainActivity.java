@@ -81,6 +81,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     newTextBox.setOnTouchListener(this);
 
+                    //Take Input
+                    newTextBox.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showInputDialog(rootLayout, newTextBox);
+                        }
+                    });
+
+                    /*
                     newTextBox.setOnClickListener(new DoubleClickListener() {
 
                         //Single Click
@@ -95,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             showDeleteDialog(rootLayout,newTextBox);
                         }
                     });
+                     */
 
                     Toast.makeText(this, "TextBox Added", Toast.LENGTH_SHORT).show();
 
@@ -115,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     // Input Dialog
-    private void showInputDialog(EditText textBox)
+    private void showInputDialog(FrameLayout rootLayout, EditText textBox)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter Text");
@@ -139,7 +149,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 dialog.cancel();
             }
         });
+
+        builder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                rootLayout.removeView(textBox);
+            }
+        });
         builder.show();
+
     }
 
 
@@ -155,6 +173,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         builder.setNegativeButton("Cancel",(dialog, which) -> dialog.dismiss());
         builder.show();
+
+        //textBox.setBackgroundResource(R.drawable.selected_border);
     }
 
     @Override
