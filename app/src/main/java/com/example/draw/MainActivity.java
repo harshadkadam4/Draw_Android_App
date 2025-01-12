@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -182,6 +183,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             public void onClick(View v) {
                 drawingView.clear(fLayout);
                 bg_image.setImageDrawable(null);
+                //fLayout.removeAllViewsInLayout();
+
+                for(int i =fLayout.getChildCount() - 1; i>=0 ; i--)
+                {
+                    View view = fLayout.getChildAt(i);
+
+                    if(view instanceof EditText)
+                    {
+                        fLayout.removeView(view);
+                        //((EditText) view).setText("");
+                    }
+                }
             }
         });
 

@@ -147,6 +147,24 @@ public class DrawingView extends View {
                 canvas.restoreToCount(saveId);
             }
 
+            for(int i =frameLayout.getChildCount() - 1; i>=0 ; i--)
+            {
+                View view = frameLayout.getChildAt(i);
+
+                if(view instanceof EditText)
+                {
+                    if(view != null)
+                    {
+                        int saveId = canvas.save();
+                        canvas.translate(view.getX(), view.getY());
+                        view.draw(canvas);
+                        canvas.restoreToCount(saveId);
+                    }
+                }
+            }
+
+
+
             // Draw the DrawingView content
             DrawingView drawingView = frameLayout.findViewById(R.id.drawingView);
             if (drawingView != null)
