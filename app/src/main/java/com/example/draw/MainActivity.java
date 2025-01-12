@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             public void onClick(View v) {
                 drawingView.clear(fLayout);
                 bg_image.setImageDrawable(null);
+                eraser.setColorFilter(getColor(R.color.black));
                 //fLayout.removeAllViewsInLayout();
 
                 for(int i =fLayout.getChildCount() - 1; i>=0 ; i--)
@@ -221,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         paint_bucket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawingView.openColorPickerDialogue();
+                drawingView.openColorPickerDialogue(eraser);
             }
         });
 

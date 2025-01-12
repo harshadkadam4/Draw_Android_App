@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +36,7 @@ public class DrawingView extends View {
     private int tempColor;
     private float stroke = 10f;
 
+    //private ImageView eraser = findViewById(R.id.eraser);
     private FrameLayout fLayout;
 
     public DrawingView(Context context, AttributeSet attrs) {
@@ -99,7 +101,7 @@ public class DrawingView extends View {
         return true;
     }
 
-    public void openColorPickerDialogue() {
+    public void openColorPickerDialogue(ImageView eraser) {
         final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(getContext(), currentColor,
                 new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
@@ -109,9 +111,15 @@ public class DrawingView extends View {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         currentColor = color;
+                        if(eraser != null)
+                        {
+                            eraser.setColorFilter(Color.BLACK);
+                        }
+                        tempColor = currentColor;
                     }
                 });
         colorPickerDialogue.show();
+
     }
 
     public void seekChange(int progress)
@@ -147,10 +155,10 @@ public class DrawingView extends View {
                 canvas.restoreToCount(saveId);
             }
 
+            // Add TextBoxes
             for(int i =frameLayout.getChildCount() - 1; i>=0 ; i--)
             {
                 View view = frameLayout.getChildAt(i);
-
                 if(view instanceof EditText)
                 {
                     if(view != null)
@@ -162,8 +170,6 @@ public class DrawingView extends View {
                     }
                 }
             }
-
-
 
             // Draw the DrawingView content
             DrawingView drawingView = frameLayout.findViewById(R.id.drawingView);
@@ -213,7 +219,7 @@ public class DrawingView extends View {
        colors.clear();
        strokeWidths.clear();
        frameLayout.setBackgroundResource(R.color.white);
-       currentColor = Color.RED;
+       currentColor= tempColor = Color.RED;
        paint.setColor(currentColor);
        invalidate();
     }
